@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 
-interface ItemAttrs {
+interface ItemAttributes {
   title: string;
   price: number;
   userId: string;
@@ -14,7 +14,7 @@ interface ItemDocument extends mongoose.Document{
 }
 
 interface ItemModel extends mongoose.Model<ItemDocument> {
-  build(attrs: ItemAttrs): ItemDocument;
+  build(attributes: ItemAttributes): ItemDocument;
 }
 
 const itemSchema = new mongoose.Schema(
@@ -43,8 +43,8 @@ const itemSchema = new mongoose.Schema(
   }
 );
 
-itemSchema.statics.build = (attrs: ItemAttrs) => {
-  return new Item(attrs);
+itemSchema.statics.build = (attributes: ItemAttributes) => {
+  return new Item(attributes);
 };
 
 const Item = mongoose.model<ItemDocument, ItemModel>('Item', itemSchema);
