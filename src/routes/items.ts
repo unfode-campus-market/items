@@ -40,8 +40,9 @@ router.put(
 
     await item.save();
 
-    new ItemUpdatedPublisher(natsWrapper.client).publish({
+    await new ItemUpdatedPublisher(natsWrapper.client).publish({
       id: item.id,
+      version: item.version,
       title: item.title,
       price: item.price,
       userId: item.userId
@@ -84,6 +85,7 @@ router.post(
     await item.save();
     await new ItemCreatedPublisher(natsWrapper.client).publish({
       id: item.id,
+      version: item.version,
       title: item.title,
       price: item.price,
       userId: item.userId

@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import {updateIfCurrentPlugin} from "mongoose-update-if-current";
 
 interface ItemAttributes {
   title: string;
@@ -11,6 +11,7 @@ interface ItemDocument extends mongoose.Document{
   title: string;
   price: number;
   userId: string;
+  version: number;
 }
 
 interface ItemModel extends mongoose.Model<ItemDocument> {
@@ -42,6 +43,9 @@ const itemSchema = new mongoose.Schema(
     }
   }
 );
+
+itemSchema.set('versionKey', 'version');
+itemSchema.plugin(updateIfCurrentPlugin);
 
 itemSchema.statics.build = (attributes: ItemAttributes) => {
   return new Item(attributes);
