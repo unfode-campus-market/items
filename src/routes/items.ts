@@ -1,5 +1,5 @@
 import express, {Request, Response} from "express";
-import {NotAuthorizedError, NotFoundError, requireAuth, validateRequest} from "@campus-market/common";
+import {BadRequestError, NotAuthorizedError, NotFoundError, requireAuth, validateRequest} from "@campus-market/common";
 import {body} from "express-validator";
 import {Item} from "../models/item";
 import {ItemCreatedPublisher} from "../events/publishers/item-created-publisher";
@@ -31,6 +31,10 @@ router.put(
 
     if (item.userId !== req.currentUser!.id) {
       throw new NotAuthorizedError();
+    }
+
+    if (item.orderId) {
+      throw new BadRequestError('Item has been reserved, thus cannot edit');
     }
 
     item.set({

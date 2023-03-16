@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 
 import {app} from "../../app";
 import {natsWrapper} from "../../nats-wrapper";
+import {Item} from "../../models/item";
 
 
 // expected behavior for valid inputs
@@ -79,6 +80,30 @@ it('should return a 401 if the user does not own the item', async function () {
       price: 1200
     })
     .expect(401);
+});
+
+it('should return a 400 if the orderId of the item is defined', async () => {
+  const cookie = global.signup();
+  const response = await request(app)
+    .post('/api/items')
+    .set('Cookie', cookie)
+    .send({
+      title: 'MacBook',
+      price: 1000
+    });
+
+  const item = await Item.findById(response.body.id);
+  item!.set({orderId: new mongoose.Types.ObjectId().toHexString()});
+  await item!.save();
+
+  await request(app)
+    .put(`/api/items/${response.body.id}`)
+    .set('Cookie', cookie)
+    .send({
+      title: 'MacBook Air',
+      price: 1200
+    })
+    .expect(400);
 });
 
 it('should return a 400 if the user provides an invalid title or price', async function () {
