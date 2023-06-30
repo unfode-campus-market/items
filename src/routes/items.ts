@@ -57,7 +57,9 @@ router.put(
 );
 
 router.get('/', async (req: Request, res: Response) => {
-  const items = await Item.find({});
+  const items = await Item.find({
+    orderId: undefined
+  });
 
   res.send(items);
 });
